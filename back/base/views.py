@@ -46,7 +46,7 @@ class productSerializer(serializers.ModelSerializer):
 
 
 # @permission_classes([IsAuthenticated])
-class StudentView(APIView):
+class ProductView(APIView):
 
     def get(self, request):
         if request.user.is_authenticated: 
@@ -113,6 +113,9 @@ class GalleryView(APIView):
      
         my_model = Gallery.objects.get(pk=pk)
         serializer = GallerySerializer(my_model, data=request.data)
+        if os.path.isfile(my_model.image.path):
+            os.remove(my_model.image.path)
+            my_model.delete()
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
